@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Défi Histoire 100</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f172a;color:#fff;font-family:-apple-system,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:18px}
+.box{width:100%;max-width:480px;flex:1;display:flex;flex-direction:column}
+.badge{align-self:center;background:#064e3b;color:#34d399;font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;margin-bottom:14px}
+.top{display:flex;justify-content:space-between;align-items:center;background:#1e293b;padding:12px 16px;border-radius:16px;margin-bottom:14px}
+.pts{background:#f59e0b;color:#0f172a;font-weight:800;padding:5px 12px;border-radius:16px}
+.info{display:flex;justify-content:space-between;font-size:14px;color:#94a3b8;margin-bottom:6px;font-weight:700}
+.bar-bg{width:100%;height:8px;background:#334155;border-radius:8px;overflow:hidden;margin-bottom:18px}
+.bar{height:100%;width:100%;background:#38bdf8;transition:width 1s linear}
+.card{background:#1e293b;border-radius:18px;padding:22px 18px;margin-bottom:18px}
+.cat{display:inline-block;background:#0284c7;color:#fff;font-size:11px;font-weight:700;padding:3px 9px;border-radius:6px;margin-bottom:10px}
+.q{font-size:18px;font-weight:700;line-height:1.4}
+.opts{display:flex;flex-direction:column;gap:10px}
+.opt{background:#1e293b;border:2px solid #334155;color:#fff;padding:15px;border-radius:14px;font-size:16px;font-weight:600;text-align:left;width:100%}
+.ok{background:#10b981!important;border-color:#059669!important}
+.no{background:#ef4444!important;border-color:#dc2626!important}
+.scr{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.hide{display:none!important}
+.btn{background:#2563eb;color:#fff;border:none;padding:17px;border-radius:14px;font-size:18px;font-weight:800;width:100%;margin-top:12px}
+.btn-g{background:#059669}
+.rules{background:#1e293b;border-radius:14px;padding:15px;width:100%;margin:18px 0;text-align:left;line-height:1.8;font-size:15px}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="badge" id="st">💾 Mode Hors Ligne Prêt</div>
+
+  <div id="s1" class="scr">
+    <div style="font-size:56px;margin-bottom:10px">🏛️</div>
+    <h1>Défi Histoire 100</h1>
+    <div class="rules">
+      <div>📌 <b>100 Étapes :</b> 1 question à la fois</div>
+      <div>⏱️ <b>Chrono :</b> 30 secondes par question</div>
+      <div>❤️❤️❤️❤️❤️ <b>5 Vies</b> | 🏆 <b>Points + Bonus</b></div>
+    </div>
+    <button id="rb" class="btn btn-g hide" type="button" onclick="reprendre()">Reprendre la partie</button>
+    <button id="sb" class="btn" type="button" onclick="demarrer(true)">Nouvelle Partie</button>
+    <div id="bs" style="margin-top:14px;color:#fbbf24;font-weight:700">Meilleur score : 0 pts</div>
+  </div>
+
+  <div id="s2" class="hide">
+    <div class="top">
+      <div id="lv" style="font-size:19px">❤️❤️❤️❤️❤️</div>
+      <div class="pts" id="sc">0 pts</div>
+    </div>
+    <div class="info"><span id="et">Étape 1 / 100</span><span id="tm" style="color:#38bdf8">30s</span></div>
+    <div class="bar-bg"><div class="bar" id="br"></div></div>
+    <div class="card"><div class="cat" id="ct">Histoire</div><div class="q" id="qt"></div></div>
+    <div class="opts" id="op"></div>
+  </div>
+
+  <div id="s3" class="scr hide">
+    <div style="font-size:56px" id="ei">🏆</div>
+    <h1 id="et2">Partie Terminée</h1>
+    <div class="rules" style="text-align:center">
+      <div>SCORE FINAL</div>
+      <div style="font-size:32px;font-weight:800;color:#f59e0b;margin:6px 0" id="fs">0 pts</div>
+      <div id="fe" style="color:#38bdf8">Étape atteinte : 0 / 100</div>
+    </div>
+    <button id="ab" class="btn" type="button" onclick="demarrer(true)">Rejouer</button>
+  </div>
+</div>
+
+<script>
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').then(function(){
+    document.getElementById('st').textContent='✅ Mémorisé sur le téléphone (100% Hors Ligne)';
+  }).catch(function(){});
+}
+
+var D=[
+{c:"Tchad",q:"En quelle année le Tchad a-t-il proclamé son indépendance ?",o:["1960","1958","1962","1965"]},
+{c:"Tchad",q:"Qui fut le premier président de la République du Tchad ?",o:["François Tombalbaye","Félix Malloum","Hissène Habré","Goukouni Oueddei"]},
+{c:"Tchad",q:"Comment s'appelait N'Djamena avant 1973 ?",o:["Fort-Lamy","Fort-Archambault","Largeau","Fort-Crampel"]},
+{c:"Tchad",q:"Quel hominidé de 7 millions d'années a été découvert au Tchad ?",o:["Toumaï","Lucy","Abel","Orrorin"]},
+{c:"Tchad",q:"Quel grand empire médiéval s'est développé autour du lac Tchad ?",o:["Kanem-Bornou","Empire du Mali","Empire Songhaï","Empire du Ghana"]},
+{c:"Tchad",q:"Quel souverain officialisa l'islam au Kanem au XIe siècle ?",o:["Hummay","Idriss Alaoma","Rabah","Mansa Moussa"]},
+{c:"Tchad",q:"Quel sultan du Bornou modernisa l'armée au XVIe siècle ?",o:["Idriss Alaoma","Sundiata Keïta","Askia Mohammed","Chaka Zoulou"]},
+{c:"Tchad",q:"Quel était l'ancien nom colonial de la ville de Sarh ?",o:["Fort-Archambault","Fort-Lamy","Moundou","Bongor"]},
+{c:"Tchad",q:"Quel gouverneur du Tchad rallia la France libre en août 1940 ?",o:["Félix Éboué","Charles de Gaulle","Philippe Leclerc","Émile Gentil"]},
+{c:"Tchad",q:"En quelle année fut adoptée la première constitution du Tchad ?",o:["1959","1960","1956","1963"]},
+{c:"Tchad",q:"Quel royaume historique avait pour capitale Ouara ?",o:["Royaume du Ouaddaï","Royaume du Baguirmi","Royaume du Darfour","Royaume Kongo"]},
+{c:"Tchad",q:"Quelle était la capitale historique du Royaume du Baguirmi ?",o:["Massenya","Abéché","Mao","Biltine"]},
+{c:"Tchad",q:"Qui a fondé l'Empire du Ouaddaï au XVIIe siècle ?",o:["Abd al-Karim","Dokko","Rabah Fadlallah","Gaourang"]},
+{c:"Tchad",q:"En quelle année a eu lieu la bataille de Kousséri ?",o:["1900","1890","1910","1885"]},
+{c:"Tchad",q:"Quel est le jour de la fête de l'indépendance du Tchad ?",o:["11 août","28 novembre","1er décembre","14 juillet"]},
+{c:"Tchad",q:"Quelle civilisation célèbre pour ses terres cuites vivait près du lac Tchad ?",o:["Civilisation Sao","Civilisation Nok","Civilisation d'Ifé","Civilisation Aksoum"]},
+{c:"Tchad",q:"À quelle date la République du Tchad fut-elle proclamée en 1958 ?",o:["28 novembre 1958","11 août 1960","1er janvier 1960","4 avril 1960"]},
+{c:"Tchad",q:"Quel général mena la colonne partie du Tchad jusqu'à Koufra en 1941 ?",o:["Général Leclerc","Général Juin","Général Koenig","Maréchal Foch"]},
+{c:"Tchad",q:"Quelle ville devint la capitale du Ouaddaï après Ouara ?",o:["Abéché","Mongo","Ati","Am Timan"]},
+{c:"Tchad",q:"Dans quel désert le crâne de Toumaï a-t-il été découvert ?",o:["Désert du Djourab","Massif de l'Ennedi","Le Tibesti","Le Guéra"]},
+{c:"Tchad",q:"Quel grand fleuve se jette dans le lac Tchad ?",o:["Le Chari","Le Niger","Le Congo","Le Nil"]},
+{c:"Tchad",q:"Quelle ville est surnommée la capitale économique du Tchad ?",o:["Moundou","Sarh","Abéché","Doba"]},
+{c:"Tchad",q:"Quel massif volcanique du nord abrite l'Emi Koussi ?",o:["Le Tibesti","L'Ennedi","Le Ouaddaï","Le Guéra"]},
+{c:"Tchad",q:"Quelle est la devise officielle de la République du Tchad ?",o:["Unité - Travail - Progrès","Liberté - Égalité - Fraternité","Paix - Travail - Patrie","Union - Discipline - Travail"]},
+{c:"Tchad",q:"Quelles sont les trois couleurs du drapeau du Tchad ?",o:["Bleu, Jaune, Rouge","Vert, Jaune, Rouge","Bleu, Blanc, Rouge","Rouge, Jaune, Vert"]},
+{c:"Afrique",q:"Quel roi du Mali fit un célèbre pèlerinage à La Mecque en 1324 ?",o:["Mansa Moussa","Soundiata Keïta","Askia Mohammed","Sonni Ali Ber"]},
+{c:"Afrique",q:"Qui a fondé l'Empire du Mali au XIIIe siècle ?",o:["Soundiata Keïta","Mansa Moussa","Samory Touré","El Hadj Omar"]},
+{c:"Afrique",q:"Quelle ville était un grand centre universitaire de l'Empire Songhaï ?",o:["Tombouctou","Dakar","Kano","Accra"]},
+{c:"Afrique",q:"En quelles années s'est tenue la conférence de Berlin ?",o:["1884-1885","1870-1871","1900-1901","1914-1918"]},
+{c:"Afrique",q:"Quel pays africain n'a jamais été colonisé (hors brève occupation) ?",o:["L'Éthiopie","Le Nigeria","Le Sénégal","Le Kenya"]},
+{c:"Afrique",q:"Qui fut le premier président noir d'Afrique du Sud en 1994 ?",o:["Nelson Mandela","Desmond Tutu","Thabo Mbeki","Steve Biko"]},
+{c:"Afrique",q:"En quelle année l'OUA a-t-elle été fondée ?",o:["1963","1960","1975","2002"]},
+{c:"Afrique",q:"Dans quelle ville se trouve le siège de l'Union Africaine ?",o:["Addis-Abeba","Nairobi","Le Caire","Abuja"]},
+{c:"Afrique",q:"Qui fut le premier ministre emblématique de l'indépendance du Congo en 1960 ?",o:["Patrice Lumumba","Joseph Kasa-Vubu","Mobutu Sese Seko","Moïse Tshombe"]},
+{c:"Afrique",q:"Quel pays d'Afrique subsaharienne fut indépendant le premier en 1957 ?",o:["Le Ghana","La Guinée","Le Cameroun","Le Mali"]},
+{c:"Afrique",q:"Qui fut le premier président du Ghana indépendant ?",o:["Kwame Nkrumah","Jomo Kenyatta","Julius Nyerere","Léopold Sédar Senghor"]},
+{c:"Afrique",q:"Quel pharaon a bâti la Grande Pyramide de Gizeh ?",o:["Khéops","Toutânkhamon","Ramsès II","Khéphren"]},
+{c:"Afrique",q:"Quelle reine d'Égypte s'est alliée à Jules César ?",o:["Cléopâtre VII","Néfertiti","Hatchepsout","Isis"]},
+{c:"Afrique",q:"Quel empire antique d'Afrique de l'Est avait pour capitale Aksoum ?",o:["Empire d'Aksoum","Empire de Méroé","Empire Zoulou","Empire Ashanti"]},
+{c:"Afrique",q:"Quel roi a unifié l'armée zouloue au XIXe siècle ?",o:["Chaka Zoulou","Cetshwayo","Dingane","Lobengula"]},
+{c:"Afrique",q:"Quel royaume d'Afrique australe a laissé de grandes ruines en pierre ?",o:["Le Grand Zimbabwe","Le Monomotapa","Royaume Luba","Royaume Kuba"]},
+{c:"Afrique",q:"Quelle reine africaine résista aux Portugais en Angola au XVIIe siècle ?",o:["La reine Nzinga","La reine Pokou","La reine Ranavalona","Yennenga"]},
